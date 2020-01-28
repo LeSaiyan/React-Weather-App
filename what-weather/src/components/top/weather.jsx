@@ -8,16 +8,19 @@ export default class Weather extends Component {
     }
 
     render() {
+
+        const { temperature, iconURL, cityname, weatherDescription } = this.props;
+
         return <div className="weather-container">
             <div className="header">
-                location name
+                {cityname}
             </div>
             <div className="inner-container">
-                <div className="image">IMG</div>
-                <div className="current-weather">10</div>
+                <div className="image"><img src={iconURL} alt=""/></div>
+                <div className="current-weather"> {temperature}° </div>
             </div>
             <div className="footer">
-                Sunny
+                {weatherDescription}
             </div>
         </div>
     }
