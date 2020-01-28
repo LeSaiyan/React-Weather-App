@@ -20,40 +20,66 @@ export default class App extends Component {
     }
   }
 
-  componentDidMount() {
+  updateWeather() {
     const { cityname } = this.state;
-
     const URL = `http://api.weatherstack.com/current?access_key=${WEATHER_KEY}&query=${cityname}`
     axios.get(URL).then((res) => {
       return res.data;
     }).then((data) => {
+      console.log(data.current.cloudcover);
+      
       this.setState({
         isLoading: false,
         temperature: data.current.temperature, 
         iconURL: data.current.weather_icons, 
         cityname: data.location.name, 
-        weatherDescription: data.current.weather_descriptions})
+        weatherDescription: data.current.weather_descriptions,
+        windSpeed: data.current.wind_speed,
+        humidity: data.current.humidity,
+        cloudcover: data.current.cloudcover,
+        pressure: data.current.pressure
+      })
     })
     .catch((err) => {
       console.log("Cannot fetch Weather Data");
       
+    });
+  }
+  componentDidMount() {
+    const { eventEmitter } = this.props;
+
+    this.updateWeather();
+
+    eventEmitter.on("updateWeather", (data) => {
+      this.setState({cityname: data}, () =>       
+      this.updateWeather());
     })
   }
 
   render() {
 
-    const { isLoading, temperature, iconURL, cityname, weatherDescription } = this.state;
+    const { isLoading, temperature, iconURL, cityname, weatherDescription, windSpeed, humidity, cloudcover, pressure } = this.state;
 
     return <div className="app-container">
       <div className="main-container">
         {isLoading && <h3>Loading Weather...</h3>}
         {!isLoading && (
         <div className="top-section">
-          <TopSection temperature={temperature} iconURL={iconURL} cityname={cityname} weatherDescription={weatherDescription}/>
+          <TopSection 
+            temperature={temperature} 
+            iconURL={iconURL} 
+            cityname={cityname} 
+            weatherDescription={weatherDescription}
+            eventEmitter={this.props.eventEmitter}/>
         </div>
         )}
         <div className="bottom-section">
-          <BottomSection />
+          <BottomSection 
+            windSpeed={windSpeed}  
+            humidity={humidity}
+            cloudcover={cloudcover}
+            pressure={pressure}
+            />
         </div>
       </div>
     </div>;

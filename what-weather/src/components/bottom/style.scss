@@ -6,3 +6,21 @@
     background-size: cover;
 }
 
+.details-container {
+    display: flex;
+    justify-content: space-around;
+    color: #fff;
+    .details {
+        display: flex;
+        flex-direction: column;
+
+        .num-details {
+            font-size: 4em;
+            text-align: center;
+        }
+
+        label {
+            text-align: center;
+        }
+    }
+}
